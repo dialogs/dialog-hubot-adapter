@@ -22,73 +22,40 @@ class DialogsAdapter extends Adapter {
 
     this.robot.logger.info(`dialogs: Connected to ${this.endpoint}`);
 
-    this.dialogs.onMessage(message => this._processMessage(message)).
-      toPromise().
-      catch(e => this.robot.logger.error(`dialogs: Failed to get message: ${e.stack}`));
-
+    this.dialogs.onMessage(message => this._processMessage(message)).toPromise().catch(e => this.robot.logger.error(`dialogs: Failed to get message: ${e.stack}`));
 
     this.robot.logger.info(`dialogs: Running robot ${this.robot.name}`);
 
     this.emit('connected');
   }
 
-
   async send(envelope, ...strings) {
-    try {
-      console.log("Hubot send envelope:");
-      console.log(envelope);
-
-      const text = strings.join('\n');
-
-      await this.dialogs.sendText(envelope.room, text, null);
-      // ^^^^^ HANGS HERE
-
-
-      this.robot.logger.debug("dialog: Sent message");
-    } catch (e) {
-      this.robot.logger.error(`dialog: Failed to send message: ${e.stack}`)
-    }
+    console.log("Hubot send envelope:");
+    console.log(envelope);
+    await this._send(envelope, null, ...strings);
   }
 
   async reply(envelope, ...strings) {
-    try {
-      console.log("Hubot reply envelope:");
-      console.log(envelope);
+    console.log("Hubot reply envelope:");
+    console.log(envelope);
+    await this._send(
+      envelope.room,
+      DlgMessageAttachment.reply(envelope.messageId),
+      ...strings,
+    );
+  }
 
-      await this.dialogs.sendText(
-        envelope.room,
-        strings.join('\n'),
-        MessageAttachment.reply(envelope.messageId)
-      );
+  async _send(envelope, attachment, ...strings) {
+    try {
+      const text = strings.join('\n');
+
+      await this.dialogs.sendText(envelope.room, text, attachment);
+
       this.robot.logger.debug("dialog: Sent message");
     } catch (e) {
       this.robot.logger.error(`dialog: Failed to send message: ${e.stack}`)
     }
   }
-
-  //async reply(envelope, ...strings) {
-    /* Message {
-      id:
-       UUID {
-         msb: Long { low: 642585065, high: -1832545360, unsigned: false },
-         lsb: Long { low: 1936096665, high: 1644828800, unsigned: false } },
-      peer: Peer { id: 388668328, type: 'private', strId: null },
-      date: 1969-12-15T08:30:28.971Z,
-      content: TextContent { text: 'Response', actions: [], type: 'text' },
-      attachment: MessageAttachment { type: 'forward', mids: [ [UUID] ] } }
-    */
-  /*  try {
-      console.log("Hubot envelope:");
-      console.log(envelope);
-      console.log("Hubot strings:");
-      console.log(strings);
-
-      await this.dialogs.sendText(envelope.room, strings.join('\n'));
-      this.robot.logger.debug("dialog: Sent message");
-    } catch (e) {
-      this.robot.logger.error(`dialog: Failed to send message: ${e}`)
-    }
-  }*/
 
   async _processMessage(message) {
     // Get history message object from message ID
