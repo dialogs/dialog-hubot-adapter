@@ -19,7 +19,7 @@ class DialogsAdapter extends Adapter {
   async run() {
     this.token = process.env['DIALOGS_TOKEN'];
     this.endpoint = process.env['DIALOGS_ENDPOINT'];
-    this.robot.logger.info("dialogs: Loaded adapter");
+    this.robot.logger.info("dialog: Loaded adapter");
 
     if (!this.token)
       throw new Error('Environment variable "DIALOGS_TOKEN" is required.');
@@ -32,22 +32,22 @@ class DialogsAdapter extends Adapter {
       endpoints: [this.endpoint]
     });
 
-    this.robot.logger.info(`dialogs: Connected to ${this.endpoint}`);
+    this.robot.logger.info(`dialog: Connected to ${this.endpoint}`);
 
     this.dialogs
       .onMessage(this._processMessage.bind(this))
       .subscribe(
         value => {},
         err =>
-          this.robot.logger.error(`dialogs: Failed to get message: ${err.stack}`),
+          this.robot.logger.error(`dialog: Failed to get message: ${err.stack}`),
         () =>
-          this.robot.logger.error(`dialogs: Message stream ended.`)
+          this.robot.logger.error(`dialog: Message stream ended.`)
       );
 
-    this.robot.logger.info(`dialogs: Running robot ${this.robot.name}`);
+    this.robot.logger.info(`dialog: Running robot ${this.robot.name}`);
 
     this.dlgSelf = await this.dialogs.getSelf();
-    this.robot.logger.info(`dialogs: Logged in as @${this.dlgSelf.nick} (#${this.dlgSelf.id})`);
+    this.robot.logger.info(`dialog: Logged in as @${this.dlgSelf.nick} (#${this.dlgSelf.id})`);
 
     this.emit('connected');
   }
@@ -71,9 +71,9 @@ class DialogsAdapter extends Adapter {
 
       await this.dialogs.sendText(envelope.room, text, attachment);
 
-      this.robot.logger.info(`dialogs: @${this.dlgSelf.nick} <== @${envelope.user.alias} in ${peerName}`);
+      this.robot.logger.info(`dialog: @${this.dlgSelf.nick} <== @${envelope.user.alias} in ${peerName}`);
     } catch (e) {
-      this.robot.logger.error(`dialogs: Failed to send message: ${e.stack}`)
+      this.robot.logger.error(`dialog: Failed to send message: ${e.stack}`)
     }
   }
 
@@ -99,7 +99,7 @@ class DialogsAdapter extends Adapter {
     // Get user from user ID
     const dlgUser = await this.dialogs.getUser(historyMsg.senderUserId);
     if (!dlgUser) {
-      this.robot.logger.error(`dialogs: Couldn't find sender of Dialogs message`);
+      this.robot.logger.error(`dialog: Couldn't find sender of Dialogs message`);
       return;
     }
 
@@ -107,7 +107,7 @@ class DialogsAdapter extends Adapter {
     const peerName = await this._peerToString(message.peer);
     const msg = new TextMessage(user, message.content.text, message.id);
     msg.room = message.peer;
-    this.robot.logger.info(`dialogs: @${this.dlgSelf.nick} ==> @${user.alias} in ${peerName}`);
+    this.robot.logger.info(`dialog: @${this.dlgSelf.nick} ==> @${user.alias} in ${peerName}`);
     this.receive(msg);
   }
 
@@ -125,7 +125,7 @@ class DialogsAdapter extends Adapter {
     const peerName = await this._peerToString(message.peer);
     const dlgUserId = message.content.extension.userInvited.invitedUid;
     if (dlgUserId === this.dlgSelf.id) {
-      this.robot.logger.info(`dialogs: Bot was invited to ${peerName}`);
+      this.robot.logger.info(`dialog: Bot was invited to ${peerName}`);
       return;
     }
     const dlgUser = await this.dialogs.getUser(dlgUserId);
@@ -133,7 +133,7 @@ class DialogsAdapter extends Adapter {
 
     const msg = new EnterMessage(user, null, message.id);
     msg.room = message.peer;
-    this.robot.logger.info(`dialogs: User @${user.alias} joined ${peerName}`);
+    this.robot.logger.info(`dialog: User @${user.alias} joined ${peerName}`);
     this.receive(msg);
   }
 
@@ -142,7 +142,7 @@ class DialogsAdapter extends Adapter {
     const peerName = await this._peerToString(message.peer);
     const dlgUserId = message.content.extension.userKicked.kickedUid;
     if (dlgUserId === this.dlgSelf.id) {
-      this.robot.logger.info(`dialogs: Bot was kicked from ${peerName}`);
+      this.robot.logger.info(`dialog: Bot was kicked from ${peerName}`);
       return;
     }
     const dlgUser = await this.dialogs.getUser(dlgUserId);
@@ -150,7 +150,7 @@ class DialogsAdapter extends Adapter {
 
     const msg = new LeaveMessage(user, null, message.id);
     msg.room = message.peer;
-    this.robot.logger.info(`dialogs: User @${user.alias} left ${peerName}`);
+    this.robot.logger.info(`dialog: User @${user.alias} left ${peerName}`);
     this.receive(msg);
   }
 
