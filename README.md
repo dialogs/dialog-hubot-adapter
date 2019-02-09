@@ -23,6 +23,8 @@ _(Based on [Rocketchat's image](https://github.com/RocketChat/hubot-rocketchat))
 
 ### Setup: Manual
 
+NodeJS 10 required!
+
 ```shell
 # 1. Install command-line tools
 npm i -g yo generator-hubot

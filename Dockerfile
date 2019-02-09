@@ -1,7 +1,6 @@
-FROM node:8-alpine
+FROM node:10-alpine
 
 RUN npm install -g yo generator-hubot \
- && npm install hubot-dialogs \
  && adduser -S hubot
 USER hubot
 WORKDIR /home/hubot
@@ -9,10 +8,7 @@ WORKDIR /home/hubot
 ENV BOT_NAME "dialogbot"
 ENV BOT_SCRIPTS=hubot-diagnostics,hubot-help,hubot-google-images,hubot-google-translate,hubot-pugme,hubot-maps,hubot-rules,hubot-shipit
 
-RUN yo hubot --name="$BOT_NAME" --defaults \
- && sed -i /heroku/d ./external-scripts.json \
- && sed -i /redis-brain/d ./external-scripts.json \
- && npm install hubot-scripts
+RUN yo hubot --name="$BOT_NAME" --adapter=dialogs --defaults
 
 CMD node -e "console.log(JSON.stringify('$BOT_SCRIPTS'.split(',')))" > external-scripts.json \
  && npm install $(node -e "console.log('$BOT_SCRIPTS'.split(',').join(' '))") \
