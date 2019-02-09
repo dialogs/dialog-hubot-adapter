@@ -2,7 +2,7 @@ FROM node:8-alpine
 
 RUN npm install -g yo generator-hubot \
  && npm install hubot-dialogs \
- && useradd hubot -m
+ && adduser -S hubot
 USER hubot
 WORKDIR /home/hubot
 

@@ -17,6 +17,15 @@ const Adapter = require('hubot/src/adapter'); // breaks w/o direct import
 
 class DialogsAdapter extends Adapter {
   async run() {
+    try {
+      await this._run();
+    } catch(e) {
+      console.error(`Uncaught exception: ${e}`);
+      process.exit(1);
+    }
+  }
+
+  async _run() {
     this.token = process.env['DIALOGS_TOKEN'];
     this.endpoint = process.env['DIALOGS_ENDPOINT'];
     this.robot.logger.info("dialog: Loaded adapter");

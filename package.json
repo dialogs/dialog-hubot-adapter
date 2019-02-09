@@ -1,6 +1,6 @@
 {
   "name": "hubot-dialogs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Hubot Adapter for dialogs",
   "main": "index.js",
   "author": "Richard Patel <richxpatel@gmail.com>",
