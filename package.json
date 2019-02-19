@@ -1,0 +1,33 @@
+{
+  "name": "hubot-dialogs",
+  "version": "0.0.2",
+  "description": "Hubot Adapter for dialogs",
+  "main": "index.js",
+  "author": "Richard Patel <richxpatel@gmail.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "dialogs",
+    "dialog",
+    "hubot",
+    "adapter",
+    "chat"
+  ],
+  "peerDependencies": {
+    "hubot": "^3.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dialogs/dialog-hubot-adapter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dialogs/dialog-hubot-adapter/issues"
+  },
+  "dependencies": {
+    "@dlghq/dialog-bot-sdk": "^3.4.2",
+    "hubot": "^3.2.0",
+    "long": "^4.0.0"
+  },
+  "files": [
+    "index.js"
+  ]
+}
